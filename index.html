@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuiz - Premium Smart Practice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-image: url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=1920&q=80');
+            --glass-bg: rgba(23, 28, 41, 0.94);
+            --glass-border: rgba(99, 102, 241, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #10b981;
+            --accent-wrong: #f43f5e;
+            --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --nav-bg: rgba(15, 23, 42, 0.95);
+            
+            --basic-grad: linear-gradient(135deg, #0d9488, #115e59);
+            --pro-grad: linear-gradient(135deg, #4f46e5, #3730a3);
+            --adv-grad: linear-gradient(135deg, #db2777, #9d174d);
+            --stats-grad: linear-gradient(135deg, #7c3aed, #5b21b6);
+            --word2-color: #ffffff;
+        }
+
+        [data-theme="light"] {
+            --bg-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80');
+            --glass-bg: rgba(255, 255, 255, 0.96);
+            --glass-border: rgba(79, 70, 229, 0.4);
+            --text-main: #0f172a;
+            --text-muted: #334155;
+            --primary: #4f46e5;
+            --primary-hover: #3730a3;
+            --accent: #059669;
+            --accent-wrong: #dc2626;
+            --card-shadow: 0 12px 40px rgba(79, 70, 229, 0.15);
+            --nav-bg: rgba(248, 250, 252, 0.98);
+            
+            --basic-grad: linear-gradient(135deg, #ccfbf1, #99f6e4);
+            --pro-grad: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            --adv-grad: linear-gradient(135deg, #fce7f3, #fbcfe8);
+            --stats-grad: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+            --word2-color: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-image) no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding-bottom: 60px; /* Space to fully reveal content above fixed footer */
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%; z-index: 100;
+            background: var(--nav-bg);
+            border-bottom: 2px solid var(--glass-border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.6rem 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #38bdf8, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-btn, .theme-btn {
+            background: var(--primary);
+            border: none;
+            color: #ffffff;
+            padding: 0.5rem 0.9rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .theme-btn { background: #eab308; color: #0f172a; }
+
+        .select-lang {
+            background: #f43f5e;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 0.7rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        main {
+            flex: 1;
+            margin-top: 75px;
+            padding: 1rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .view.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        .word-red { color: #f43f5e; }
+        .word-white { color: var(--word2-color); }
+        .word-green { color: #10b981; }
+
+        .hero p {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .dashboard-stats {
+            background: var(--stats-grad);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto 2rem auto;
+            padding: 1.25rem;
+            text-align: center;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="light"] .dashboard-stats { color: #5b21b6; }
+        [data-theme="dark"] .dashboard-stats { color: #ffffff; }
+
+        .stat-box h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        .stat-box p { font-size: 1.8rem; font-weight: 800; }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .level-card {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .level-card.basic-card { background: var(--basic-grad); color: var(--text-main); }
+        .level-card.pro-card { background: var(--pro-grad); color: #ffffff; }
+        .level-card.adv-card { background: var(--adv-grad); color: #ffffff; }
+
+        [data-theme="light"] .level-card.basic-card { color: #115e59; }
+        [data-theme="light"] .level-card.pro-card { color: #3730a3; }
+        [data-theme="light"] .level-card.adv-card { color: #9d174d; }
+
+        .level-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: #ffffff;
+        }
+
+        .level-card h3 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .level-card p { font-size: 1rem; font-weight: 600; opacity: 0.9; }
+
+        /* FIXED: Responsive Mobile Optimized Quiz Container Layout */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            height: auto;
+            max-height: none;
+            display: flex;
+            flex-direction: column;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+        }
+
+        .quiz-header h2 { color: #38bdf8; font-size: 1.1rem; }
+
+        .timer-box {
+            font-size: 1rem;
+            font-weight: 800;
+            background: #f43f5e;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #38bdf8);
+        }
+
+        .question-meta {
+            color: #a855f7;
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        /* FIXED: Prevent boundary breaking */
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            line-height: 1.4;
+            color: var(--text-main);
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (min-width: 550px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .option-btn {
+            background: rgba(99, 102, 241, 0.12);
+            border: 2.5px solid var(--primary);
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+            color: var(--text-main);
+            text-align: left;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            word-break: break-word;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .option-btn.correct {
+            background: #10b981 !important;
+            border-color: #059669 !important;
+            color: #ffffff !important;
+        }
+
+        .option-btn.wrong {
+            background: #f43f5e !important;
+            border-color: #e11d48 !important;
+            color: #ffffff !important;
+        }
+
+        .feedback-panel {
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            display: none;
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+            font-weight: 800;
+            text-align: center;
+            border: 2px solid transparent;
+            word-wrap: break-word;
+        }
+
+        .feedback-panel.visible { display: block; }
+
+        /* FIXED: Scaled layout framework for mobile action bars */
+        .quiz-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .quiz-actions button {
+            padding: 0.7rem 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border: none;
+            text-align: center;
+        }
+
+        .quiz-actions .btn-secondary {
+            background: #a855f7;
+            color: white;
+        }
+
+        .quiz-actions #nextBtn {
+            grid-column: span 3;
+            background: #10b981;
+            color: white;
+            margin-top: 0.25rem;
+            font-size: 0.95rem;
+            padding: 0.8rem;
+        }
+
+        @media (min-width: 480px) {
+            .quiz-actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 0.5rem;
+            }
+            .quiz-actions button { font-size: 0.95rem; padding: 0.7rem 1.2rem; }
+            .quiz-actions #nextBtn { grid-column: auto; margin-top: 0; }
+        }
+
+        .results-container {
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border: 3px solid #10b981;
+            animation: resultBurst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes resultBurst {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .result-item {
+            padding: 1rem;
+            border-radius: 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid var(--primary);
+        }
+
+        .result-item h5 {
+            font-size: 0.9rem;
+            color: #a855f7;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-item p { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+
+        .res-actions-container {
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            margin-top: 1.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-res-home {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        .btn-res-home:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        }
+
+        .btn-res-retry {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(4, 120, 87, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        .btn-res-retry:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+            display: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            opacity: 0.9;
+            animation: drop 2.5s infinite linear;
+        }
+
+        @keyframes drop {
+            0% { transform: translateY(-10px) rotate(0deg); top: 0; }
+            100% { transform: translateY(100vh) rotate(360deg); top: 100%; }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 110;
+            text-align: center;
+            padding: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-top: 2px solid var(--glass-border);
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="backToHome()">MathQuiz</div>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="backToHome()">Home</button>
+                <select class="select-lang" id="langSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                </select>
+                <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="landingView" class="view active">
+            <div class="hero">
+                <h1>
+                    <span class="word-red">Play</span> 
+                    <span class="word-white">Learn</span> 
+                    <span class="word-green">Grow</span>
+                </h1>
+                <p id="subTitle">Unlimited AI-style generated math questions for every skill level.</p>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-box">
+                    <h4 id="lblTotalScore">Total Score</h4>
+                    <p id="statTotalScore">0</p>
+                </div>
+                <div class="stat-box">
+                    <h4 id="lblAvgAccuracy">Avg Accuracy</h4>
+                    <p id="statAvgAccuracy">0%</p>
+                </div>
+            </div>
+
+            <div class="level-grid">
+                <div class="glass-panel level-card basic-card" onclick="startQuizSession('basic')">
+                    <h3 id="lvlTitleBasic">Basic</h3>
+                    <p id="lvlDescBasic">Arithmetic, Counting and Simple Equations</p>
+                </div>
+                <div class="glass-panel level-card pro-card" onclick="startQuizSession('pro')">
+                    <h3 id="lvlTitlePro">Pro</h3>
+                    <p id="lvlDescPro">Percentages, Algebra and Fractions</p>
+                </div>
+                <div class="glass-panel level-card adv-card" onclick="startQuizSession('advanced')">
+                    <h3 id="lvlTitleAdv">Advanced</h3>
+                    <p id="lvlDescAdv">Quadratic Equations, Geometry and Calculus</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quizView" class="view">
+            <div class="glass-panel quiz-container">
+                <div class="quiz-header">
+                    <h2 id="quizLevelHeading">Basic Level</h2>
+                    <div class="timer-box"><span id="timerDisplay">00:00</span></div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="quizProgressBar"></div>
+                </div>
+
+                <div>
+                    <div class="question-meta"><span id="lblQust">Question</span> <span id="currentQIndex">1</span> / 10</div>
+                    <div class="question-text" id="questionText">Generating custom question workspace...</div>
+                    <div class="options-grid" id="optionsGrid"></div>
+                </div>
+
+                <div class="feedback-panel" id="feedbackPanel"></div>
+
+                <div class="quiz-actions">
+                    <button class="btn-secondary" id="prevBtn" onclick="handlePreviousQuestion()">Back</button>
+                    <button class="btn-secondary" id="hintBtn" onclick="showHint()">Hint</button>
+                    <button class="btn-secondary" id="skipBtn" onclick="handleSkipQuestion()">Skip</button>
+                    <button id="nextBtn" onclick="handleNextQuestion()">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="resultView" class="view">
+            <div class="glass-panel results-container">
+                <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem; color: #10b981;" id="resTitle">Quiz Finished!</h2>
+                <div class="results-grid">
+                    <div class="result-item"><h5 id="lblResPct">Accuracy</h5><p id="resPct">0%</p></div>
+                    <div class="result-item"><h5 id="lblResScore">Score</h5><p id="resScore">0 pts</p></div>
+                    <div class="result-item"><h5 id="lblResCorrect">Correct</h5><p id="resCorrect">0 / 10</p></div>
+                    <div class="result-item"><h5 id="lblResTime">Time Taken</h5><p id="resTime">0s</p></div>
+                </div>
+                <div class="res-actions-container">
+                    <button class="btn-res-home" id="btnHome" onclick="backToHome()">Home</button>
+                    <button class="btn-res-retry" id="btnRetry" onclick="restartQuiz()">Retry</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 MathQuiz ! Powered by Amrit.</p>
+    </footer>
+
+    <script>
+        let currentLang = 'en';
+        let currentLevel = 'basic';
+        let quizSessionQuestions = [];
+        let activeQuestionIndex = 0;
+        let userResponses = {};
+        let sessionTimer = null;
+        let totalSecondsElapsed = 0;
+
+        const translations = {
+            en: {
+                subTitle: "Unlimited AI-style generated math questions for every skill level.",
+                lblTotalScore: "Total Score",
+                lblAvgAccuracy: "Avg Accuracy",
+                lblQust: "Question",
+                hintTitle: "Hint:",
+                correctTxt: "Correct Answer!",
+                wrongTxt: "Incorrect. Correct Answer is:",
+                skippedTxt: "Question Skipped.",
+                btnNext: "Next Question",
+                btnFinish: "Finish Quiz",
+                resTitle: "Quiz Performance Summary!",
+                lblResPct: "Accuracy",
+                lblResScore: "Score",
+                lblResCorrect: "Correct",
+                lblResTime: "Time",
+                btnHome: "Home",
+                btnRetry: "Retry",
+                lvlTitleBasic: "Basic",
+                lvlDescBasic: "Arithmetic, Counting and Simple Equations",
+                lvlTitlePro: "Pro",
+                lvlDescPro: "Percentages, Algebra and Fractions",
+                lvlTitleAdv: "Advanced",
+                lvlDescAdv: "Quadratic Equations, Geometry and Calculus"
+            },
+            hi: {
+                subTitle: "हर स्तर के लिए असीमित ऑटो-जनरेटेड गणित के प्रश्न।",
+                lblTotalScore: "कुल स्कोर",
+                lblAvgAccuracy: "औसत सटीकता",
+                lblQust: "प्रश्न",
+                hintTitle: "संकेत:",
+                correctTxt: "बिल्कुल सही उत्तर!",
+                wrongTxt: "गलत उत्तर। सही जवाब है:",
+                skippedTxt: "प्रश्न छोड़ दिया गया।",
+                btnNext: "अगला प्रश्न",
+                btnFinish: "सबमिट करें",
+                resTitle: "क्विज परिणाम!",
+                lblResPct: "सटीकता",
+                lblResScore: "स्कोर",
+                lblResCorrect: "सही उत्तर",
+                lblResTime: "समय",
+                btnHome: "मुख्य पृष्ठ",
+                btnRetry: "फिर से प्रयास करें",
+                lvlTitleBasic: "बेसिक",
+                lvlDescBasic: "अंकगणित, गिनती और सरल समीकरण",
+                lvlTitlePro: "प्रो",
+                lvlDescPro: "प्रतिशत, बीजगणित और भिन्न",
+                lvlTitleAdv: "एडवांस्ड",
+                lvlDescAdv: "द्विघात समीकरण, ज्यामिति और कैलकुलस"
+            }
+        };
+
+        function changeLanguage() {
+            currentLang = document.getElementById('langSelect').value;
+            const t = translations[currentLang];
+            
+            document.getElementById('subTitle').innerText = t.subTitle;
+            document.getElementById('lblTotalScore').innerText = t.lblTotalScore;
+            document.getElementById('lblAvgAccuracy').innerText = t.lblAvgAccuracy;
+            document.getElementById('lblQust').innerText = t.lblQust;
+            
+            document.getElementById('lblResPct').innerText = t.lblResPct;
+            document.getElementById('lblResScore').innerText = t.lblResScore;
+            document.getElementById('lblResCorrect').innerText = t.lblResCorrect;
+            document.getElementById('lblResTime').innerText = t.lblResTime;
+            document.getElementById('btnHome').innerText = t.btnHome;
+            document.getElementById('btnRetry').innerText = t.btnRetry;
+
+            document.getElementById('lvlTitleBasic').innerText = t.lvlTitleBasic;
+            document.getElementById('lvlDescBasic').innerText = t.lvlDescBasic;
+            document.getElementById('lvlTitlePro').innerText = t.lvlTitlePro;
+            document.getElementById('lvlDescPro').innerText = t.lvlDescPro;
+            document.getElementById('lvlTitleAdv').innerText = t.lvlTitleAdv;
+            document.getElementById('lvlDescAdv').innerText = t.lvlDescAdv;
+
+            if(quizSessionQuestions.length > 0) {
+                renderActiveQuestion();
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function backToHome() {
+            clearInterval(sessionTimer);
+            updateAnalyticsDashboard();
+            switchView('landingView');
+        }
+
+        function generateMathQuestion(level) {
+            let ans = 0;
+            let questionEn = "", questionHi = "", hintEn = "", hintHi = "";
+            let typeSeed = Math.floor(Math.random() * 4);
+
+            if (level === 'basic') {
+                if (typeSeed === 0) {
+                    let a = Math.floor(Math.random() * 50) + 15;
+                    let b = Math.floor(Math.random() * 40) + 10;
+                    questionEn = `What is ${a} + ${b}?`;
+                    questionHi = `${a} + ${b} का मान क्या होगा?`;
+                    ans = a + b;
+                    hintEn = "Add the unit numbers first."; hintHi = "पहले इकाई अंकों को जोड़ें।";
+                } else if (typeSeed === 1) {
+                    let a = Math.floor(Math.random() * 80) + 20;
+                    let b = Math.floor(Math.random() * 19) + 5;
+                    questionEn = `What is ${a} - ${b}?`;
+                    questionHi = `${a} - ${b} का मान क्या होगा?`;
+                    ans = a - b;
+                    hintEn = "Subtract values straight."; hintHi = "संख्याओं को सीधे घटाएं।";
+                } else if (typeSeed === 2) {
+                    let a = Math.floor(Math.random() * 8) + 3;
+                    let b = Math.floor(Math.random() * 7) + 3;
+                    questionEn = `Calculate product: ${a} × ${b}`;
+                    questionHi = `गुणा करें: ${a} × ${b}`;
+                    ans = a * b;
+                    hintEn = "Use tables scaling rows."; hintHi = "गुणन सारणी (पहाड़े) का उपयोग करें।";
+                } else {
+                    let a = Math.floor(Math.random() * 12) + 4;
+                    questionEn = `Find missing number: ${a}, ${a+4}, ${a+8}, ?`;
+                    questionHi = `अनुक्रम में छूटी हुई संख्या ज्ञात करें: ${a}, ${a+4}, ${a+8}, ?`;
+                    ans = a + 12;
+                    hintEn = "Pattern increments by 4."; hintHi = "पैटर्न में लगातार 4 जोड़ा जा रहा है।";
+                }
+            } else if (level === 'pro') {
+                if (typeSeed === 0) {
+                    let pct = Math.floor(Math.random() * 3 + 1) * 25; 
+                    let base = Math.floor(Math.random() * 3 + 1) * 200;
+                    questionEn = `Find ${pct}% of ${base}`;
+                    questionHi = `${base} का ${pct}% ज्ञात करें`;
+                    ans = (pct / 100) * base;
+                    hintEn = "Divide by 100 then multiply."; hintHi = "100 से भाग देकर गुणा करें।";
+                } else if (typeSeed === 1) {
+                    let a = Math.floor(Math.random() * 5) + 3;
+                    questionEn = `Solve for x: ${a}x + 10 = ${a*5 + 10}`;
+                    questionHi = `समीकरण हल करें: ${a}x + 10 = ${a*5 + 10}`;
+                    ans = 5;
+                    hintEn = "Isolate x factors by subtraction."; hintHi = "संख्या को घटाकर x को अलग करें।";
+                } else if (typeSeed === 2) {
+                    let num = Math.floor(Math.random() * 3) + 3;
+                    questionEn = `What is the cube value of ${num}?`;
+                    questionHi = `${num} का घन (cube) मान क्या होगा?`;
+                    ans = Math.pow(num, 3);
+                    hintEn = "Multiply the number three times."; hintHi = "संख्या को आपस में तीन बार गुणा करें।";
+                } else {
+                    questionEn = `If ratio is 4:5 and smaller number is 20, find larger value.`;
+                    questionHi = `यदि अनुपात 4:5 है और छोटी संख्या 20 है, तो बड़ी संख्या ज्ञात करें।`;
+                    ans = 25;
+                    hintEn = "Find value of 1 ratio part first."; hintHi = "पहले 1 अनुपात भाग का मान निकालें।";
+                }
+            } else {
+                if (typeSeed === 0) {
+                    questionEn = "Find the positive root for x² - 7x + 12 = 0";
+                    questionHi = "समीकरण x² - 7x + 12 = 0 का धनात्मक मूल ज्ञात करें";
+                    ans = 4;
+                    hintEn = "Roots decompose factors to 3 and 4."; hintHi = "गुणनखंड करने पर मूल 3 और 4 आते हैं।";
+                } else if (typeSeed === 1) {
+                    questionEn = "If right triangle sets tan(A) = 4/3, what is hypotenuse length?";
+                    questionHi = "यदि समकोण त्रिभुज में tan(A) = 4/3 है, तो कर्ण की लंबाई क्या होगी?";
+                    ans = 5;
+                    hintEn = "Apply standard Pythagorean triplets."; hintHi = "पायथागोरस ट्रिपलेट नियम का उपयोग करें।";
+                } else if (typeSeed === 2) {
+                    let base = Math.floor(Math.random() * 2) + 4;
+                    questionEn = `Find midpoint x coordinate between (0,0) and (${base*2}, 10)`;
+                    questionHi = `बिंदु (0,0) और (${base*2}, 10) के बीच का मध्यबिंदु x ज्ञात करें`;
+                    ans = base;
+                    hintEn = "Calculate average of x coordinates."; hintHi = "दोनों x निर्देशांकों का औसत निकालें।";
+                } else {
+                    questionEn = "Compute derivative df/dx value at x=2 for f(x) = 3x²";
+                    questionHi = "f(x) = 3x² के लिए x=2 पर अवकलन (derivative) मान ज्ञात करें";
+                    ans = 12;
+                    hintEn = "Derivative follows rule: 6x."; hintHi = "अवकलन नियम का उपयोग करें: 6x।";
+                }
+            }
+
+            let options = new Set([ans]);
+            while(options.size < 4) {
+                options.add(ans + Math.floor(Math.random() * 5) + (Math.random() > 0.5 ? 1 : -1));
+            }
+
+            return {
+                en: questionEn, hi: questionHi,
+                options: Array.from(options).sort(() => Math.random() - 0.5),
+                answer: ans,
+                hintEn: hintEn, hintHi: hintHi
+            };
+        }
+
+        function startQuizSession(lvl) {
+            currentLevel = lvl;
+            quizSessionQuestions = [];
+            userResponses = {};
+            activeQuestionIndex = 0;
+
+            for (let i = 0; i < 10; i++) {
+                quizSessionQuestions.push(generateMathQuestion(currentLevel));
+            }
+
+            document.getElementById('quizLevelHeading').innerText = `${currentLevel.toUpperCase()} Challenge`;
+            switchView('quizView');
+            renderActiveQuestion();
+            startQuizTimer();
+        }
+
+        function startQuizTimer() {
+            clearInterval(sessionTimer);
+            totalSecondsElapsed = 0;
+            sessionTimer = setInterval(() => {
+                totalSecondsElapsed++;
+                let mins = Math.floor(totalSecondsElapsed / 60);
+                let secs = totalSecondsElapsed % 60;
+                document.getElementById('timerDisplay').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function renderActiveQuestion() {
+            const qData = quizSessionQuestions[activeQuestionIndex];
+            document.getElementById('currentQIndex').innerText = activeQuestionIndex + 1;
+            document.getElementById('questionText').innerText = currentLang === 'en' ? qData.en : qData.hi;
+            document.getElementById('quizProgressBar').style.width = `${(activeQuestionIndex / 10) * 100}%`;
+
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+
+            const panel = document.getElementById('feedbackPanel');
+            panel.className = 'feedback-panel';
+
+            const isAnswered = userResponses.hasOwnProperty(activeQuestionIndex);
+
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.disabled = isAnswered;
+
+                if (isAnswered) {
+                    if (opt === qData.answer) btn.classList.add('correct');
+                    else if (userResponses[activeQuestionIndex] === opt) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(opt, btn);
+                }
+                grid.appendChild(btn);
+            });
+
+            if(isAnswered) showSimpleFeedbackStrip();
+            document.getElementById('prevBtn').disabled = activeQuestionIndex === 0;
+            document.getElementById('nextBtn').innerText = activeQuestionIndex === 9 ? translations[currentLang].btnFinish : translations[currentLang].btnNext;
+        }
+
+        function checkAnswer(chosen, btn) {
+            const qData = quizSessionQuestions[activeQuestionIndex];
+            userResponses[activeQuestionIndex] = chosen;
+
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.disabled = true;
+                if (parseFloat(b.innerText) === qData.answer) b.classList.add('correct');
+            });
+
+            if (chosen !== qData.answer) {
+                btn.classList.add('wrong');
+            }
+            showSimpleFeedbackStrip();
+        }
+
+        function showSimpleFeedbackStrip() {
+            const panel = document.getElementById('feedbackPanel');
+            const qData = quizSessionQuestions[activeQuestionIndex];
+            const chosen = userResponses[activeQuestionIndex];
+
+            panel.className = 'feedback-panel visible';
+            if (chosen === null) {
+                panel.innerText = translations[currentLang].skippedTxt;
+                panel.style.color = '#ffffff';
+                panel.style.backgroundColor = '#6b7280';
+                panel.style.borderColor = '#4b5563';
+            } else if (chosen === qData.answer) {
+                panel.innerText = translations[currentLang].correctTxt;
+                panel.style.color = '#ffffff';
+                panel.style.backgroundColor = '#10b981';
+                panel.style.borderColor = '#059669';
+            } else {
+                panel.innerText = `${translations[currentLang].wrongTxt} ${qData.answer}`;
+                panel.style.color = '#ffffff';
+                panel.style.backgroundColor = '#f43f5e';
+                panel.style.borderColor = '#e11d48';
+            }
+        }
+
+        function showHint() {
+            const panel = document.getElementById('feedbackPanel');
+            const qData = quizSessionQuestions[activeQuestionIndex];
+            panel.className = 'feedback-panel visible';
+            panel.style.color = '#ffffff';
+            panel.style.backgroundColor = '#7c3aed';
+            panel.style.borderColor = '#6d28d9';
+            panel.innerText = `${translations[currentLang].hintTitle} ${currentLang === 'en' ? qData.hintEn : qData.hintHi}`;
+        }
+
+        function handleSkipQuestion() {
+            if (!userResponses.hasOwnProperty(activeQuestionIndex)) {
+                userResponses[activeQuestionIndex] = null;
+            }
+            handleNextQuestion();
+        }
+
+        function handlePreviousQuestion() {
+            if (activeQuestionIndex > 0) {
+                activeQuestionIndex--;
+                renderActiveQuestion();
+            }
+        }
+
+        function handleNextQuestion() {
+            if (activeQuestionIndex === 9) {
+                compileFinalQuizResults();
+            } else {
+                activeQuestionIndex++;
+                renderActiveQuestion();
+            }
+        }
+
+        function compileFinalQuizResults() {
+            clearInterval(sessionTimer);
+            let correct = 0;
+            quizSessionQuestions.forEach((q, i) => {
+                if (userResponses[i] === q.answer) correct++;
+            });
+
+            const scorePoints = correct * 10;
+            const pct = (correct / 10) * 100;
+
+            document.getElementById('resPct').innerText = `${pct}%`;
+            document.getElementById('resScore').innerText = `${scorePoints} pts`;
+            document.getElementById('resCorrect').innerText = `${correct} / 10`;
+            document.getElementById('resTime').innerText = `${totalSecondsElapsed}s`;
+
+            let totalSavedScore = localStorage.getItem('mq_total_score') ? parseInt(localStorage.getItem('mq_total_score')) : 0;
+            let totalSessionsCount = localStorage.getItem('mq_sessions_count') ? parseInt(localStorage.getItem('mq_sessions_count')) : 0;
+            let cumulativePctSum = localStorage.getItem('mq_pct_sum') ? parseInt(localStorage.getItem('mq_pct_sum')) : 0;
+
+            localStorage.setItem('mq_total_score', totalSavedScore + scorePoints);
+            localStorage.setItem('mq_sessions_count', totalSessionsCount + 1);
+            localStorage.setItem('mq_pct_sum', cumulativePctSum + pct);
+
+            if (pct >= 60) {
+                triggerConfettiExplosionAnimation();
+            }
+
+            switchView('resultView');
+        }
+
+        function restartQuiz() {
+            startQuizSession(currentLevel);
+        }
+
+        function updateAnalyticsDashboard() {
+            let totalSavedScore = localStorage.getItem('mq_total_score') || 0;
+            let totalSessionsCount = parseInt(localStorage.getItem('mq_sessions_count')) || 0;
+            let cumulativePctSum = parseInt(localStorage.getItem('mq_pct_sum')) || 0;
+
+            let avgAccuracy = totalSessionsCount > 0 ? Math.round(cumulativePctSum / totalSessionsCount) : 0;
+
+            document.getElementById('statTotalScore').innerText = totalSavedScore;
+            document.getElementById('statAvgAccuracy').innerText = `${avgAccuracy}%`;
+        }
+
+        function triggerConfettiExplosionAnimation() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            container.style.display = 'block';
+            const colors = ['#38bdf8', '#10b981', '#f43f5e', '#eab308', '#ec4899', '#a855f7'];
+
+            for (let i = 0; i < 70; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.transform = `scale(${Math.random() * 0.6 + 0.5})`;
+                conf.style.animationDuration = (Math.random() * 1.5 + 1.2) + 's';
+                container.appendChild(conf);
+            }
+
+            setTimeout(() => {
+                container.style.display = 'none';
+                container.innerHTML = '';
+            }, 2500);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAnalyticsDashboard();
+            changeLanguage();
+        });
+    </script>
+</body>
+</html>
